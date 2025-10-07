@@ -1,0 +1,2 @@
+# koisk
+This project builds a privacy-preserving kiosk assistant on a Raspberry Pi 4, powered by a local LLM (like TinyLlama via Ollama). A camera detects when someone approaches activating speech input for natural interaction. Queries are processed through a local RAG pipeline using SQLite-vec to retrieve contextually relevant information for that specific kiosk instance. Responses are generated, optionally translated for multilingual users, and spoken back via TTS.
