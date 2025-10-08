@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "kiosk-llm"
+name = "koisk"
 version = "0.1.0"
 description = "Fine-tuned LLM Kiosk for India - Multilingual AI Assistant"
 authors = [
@@ -50,6 +50,9 @@ target-version = ['py311']
 [tool.isort]
 profile = "black"
 line_length = 88
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
 
 [tool.mypy]
 python_version = "3.11"
