@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Tests
+.pytest_cache/
+
+# Distributions and build artifacts
+dist/
+build/
+*.egg-info/
+*.whl
+
+# C extensions
+# For example:
+# my_extension.so
+
+# MyPy
+.mypy_cache/
+
+# Sphinx documentation
+docs/_build/
