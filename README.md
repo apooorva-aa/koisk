@@ -1,6 +1,6 @@
 # Koisk LLM - Fine-Tuned AI Assistant for India
 
-A privacy-preserving koisk assistant running on Raspberry Pi 4, powered by local LLM with multilingual support (English/Hindi). Features face detection, speech input, RAG-powered responses, and text-to-speech output - all running locally for complete privacy and offline capability.
+A privacy-preserving kiosk assistant running on Raspberry Pi 4, powered by local LLM with multilingual support (English/Hindi). Features face detection, speech input, RAG-powered responses, and text-to-speech output - all running locally for complete privacy and offline capability.
 
 ## Quick Start
 
