@@ -1,0 +1,49 @@
+# Kiosk LLM Configuration
+
+# Hardware configuration
+hardware:
+  camera_index: 0
+  audio_device: "default"
+
+# Model configuration
+models:
+  whisper_model: "base" # Whisper model size (tiny, base, small, medium, large)
+  llm_model: "tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf" # TinyLlama model file
+  tts_voice: "en_US-ljspeech-medium" # TTS voice model
+  embedding_model: "all-MiniLM-L6-v2" # Sentence transformer model
+
+# LLM server configuration
+llm:
+  server_url: "http://localhost:8080"
+  max_tokens: 150
+  temperature: 0.7
+
+# Session management
+session:
+  timeout_seconds: 300 # 5 minutes
+  max_history: 10 # Maximum conversation history entries
+
+# Performance settings
+performance:
+  max_memory_mb: 3072 # Maximum memory usage (3GB for Pi 4 4GB)
+  llm_threads: 4 # Number of threads for LLM inference
+
+# Face detection settings
+face_detection:
+  scale_factor: 1.1
+  min_neighbors: 5
+  min_size: [30, 30]
+  timeout_seconds: 10
+
+# Audio settings
+audio:
+  sample_rate: 16000
+  chunk_size: 1024
+  silence_threshold: 0.01
+  silence_duration: 1.0
+
+# RAG settings
+rag:
+  max_results: 3
+  similarity_threshold: 0.7
+  knowledge_base_path: "data/kiosk_llm.db"
