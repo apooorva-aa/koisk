@@ -18,6 +18,8 @@ build/
 
 # MyPy
 .mypy_cache/
+.DS_Store
+.venv/
 
 # Sphinx documentation
 docs/_build/
