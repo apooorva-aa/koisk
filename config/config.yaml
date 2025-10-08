@@ -1,4 +1,4 @@
-# Kiosk LLM Configuration
+# Koisk LLM Configuration
 
 # Hardware configuration
 hardware:
@@ -46,4 +46,4 @@ audio:
 rag:
   max_results: 3
   similarity_threshold: 0.7
-  knowledge_base_path: "data/kiosk_llm.db"
+  knowledge_base_path: "data/koisk.db"

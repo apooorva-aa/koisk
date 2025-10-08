@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Main application entry point for Kiosk LLM system.
+Main application entry point for Koisk LLM system.
 """
 
 import asyncio
@@ -25,8 +25,8 @@ from utils.logging import setup_logging
 logger = setup_logging()
 
 app = FastAPI(
-    title="Kiosk LLM API",
-    description="Fine-tuned LLM Kiosk for India - Multilingual AI Assistant",
+    title="Koisk LLM API",
+    description="Fine-tuned LLM Koisk for India - Multilingual AI Assistant",
     version="0.1.0"
 )
 
@@ -45,7 +45,7 @@ async def startup_event():
     global face_detector, asr_component, llm_component, rag_component, tts_component, session_manager
     
     try:
-        logger.info("Starting Kiosk LLM system...")
+        logger.info("Starting Koisk LLM system...")
         
         # Load configuration
         config = load_config()
@@ -76,7 +76,7 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     """Cleanup on shutdown."""
-    logger.info("Shutting down Kiosk LLM system...")
+    logger.info("Shutting down Koisk LLM system...")
     
     if session_manager:
         await session_manager.cleanup()
@@ -93,7 +93,7 @@ async def shutdown_event():
 @app.get("/")
 async def root():
     """Root endpoint."""
-    return {"message": "Kiosk LLM API is running!", "status": "healthy"}
+    return {"message": "Koisk LLM API is running!", "status": "healthy"}
 
 
 @app.get("/health")
@@ -144,7 +144,7 @@ async def interact(text: str = None, audio_file: str = None):
 
 async def main():
     """Main application entry point."""
-    logger.info("Starting Kiosk LLM application...")
+    logger.info("Starting Koisk LLM application...")
     
     # Run the FastAPI server
     config = uvicorn.Config(

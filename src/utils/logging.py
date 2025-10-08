@@ -24,7 +24,7 @@ def setup_logging(log_level: str = "INFO", log_file: str = None) -> logging.Logg
     log_dir.mkdir(parents=True, exist_ok=True)
     
     # Setup logger
-    logger = logging.getLogger("kiosk-llm")
+    logger = logging.getLogger("koisk")
     logger.setLevel(getattr(logging, log_level.upper()))
     
     # Clear existing handlers
@@ -50,7 +50,7 @@ def setup_logging(log_level: str = "INFO", log_file: str = None) -> logging.Logg
         logger.addHandler(file_handler)
     else:
         # Default log file
-        log_file_path = log_dir / f"kiosk-llm-{datetime.now().strftime('%Y%m%d')}.log"
+        log_file_path = log_dir / f"koisk-{datetime.now().strftime('%Y%m%d')}.log"
         file_handler = logging.FileHandler(log_file_path)
         file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(formatter)

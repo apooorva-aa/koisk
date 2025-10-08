@@ -1,11 +1,9 @@
-version: "3.8"
-
 services:
-  kiosk-llm:
+  koisk:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: kiosk-llm-dev
+    container_name: koisk-dev
     ports:
       - "8000:8000"
     volumes:
@@ -26,18 +24,18 @@ services:
   # Database service for development
   sqlite-db:
     image: alpine:latest
-    container_name: kiosk-sqlite
+    container_name: koisk-sqlite
     volumes:
       - ./data:/data
     command:
       [
         "sh",
         "-c",
-        "apk add --no-cache sqlite && sqlite3 /data/kiosk_llm.db 'SELECT 1;' && while true; do sleep 30; done",
+        "apk add --no-cache sqlite && sqlite3 /data/koisk.db 'SELECT 1;' && while true; do sleep 30; done",
       ]
     environment:
-      - SQLITE_DB_PATH=/data/kiosk_llm.db
+      - SQLITE_DB_PATH=/data/koisk.db
 
 networks:
   default:
-    name: kiosk-network
+    name: koisk-network

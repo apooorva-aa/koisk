@@ -28,7 +28,7 @@ class RAGComponent:
             logger.info("Initializing RAG component...")
             
             # Initialize database
-            db_path = self.config.get('rag', {}).get('knowledge_base_path', 'data/kiosk_llm.db')
+            db_path = self.config.get('rag', {}).get('knowledge_base_path', 'data/koisk.db')
             self.db_manager = DatabaseManager(db_path)
             self.db_manager.connect()
             self.db_manager.initialize_schema()
@@ -56,22 +56,22 @@ class RAGComponent:
         """Add sample data for testing."""
         sample_docs = [
             {
-                "title": "Welcome to Kiosk",
-                "content": "This is an AI-powered kiosk that can help you with various queries. You can ask questions about services, products, or general information.",
+                "title": "Welcome to Koisk",
+                "content": "This is an AI-powered koisk that can help you with various queries. You can ask questions about services, products, or general information.",
                 "metadata": {"category": "general", "language": "en"},
                 "category": "general",
                 "language": "en"
             },
             {
                 "title": "Services Available",
-                "content": "Our kiosk provides information about banking services, healthcare facilities, government services, and retail information.",
+                "content": "Our koisk provides information about banking services, healthcare facilities, government services, and retail information.",
                 "metadata": {"category": "services", "language": "en"},
                 "category": "services",
                 "language": "en"
             },
             {
                 "title": "How to Use",
-                "content": "Simply speak or type your question. The kiosk will understand your query and provide relevant information. You can ask in English or Hindi.",
+                "content": "Simply speak or type your question. The koisk will understand your query and provide relevant information. You can ask in English or Hindi.",
                 "metadata": {"category": "help", "language": "en"},
                 "category": "help",
                 "language": "en"

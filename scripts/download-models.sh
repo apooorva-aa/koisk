@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Model Download Script
-# Downloads required AI models for the Kiosk LLM system
+# Downloads required AI models for the Koisk LLM system
 
 set -e
 
-echo "🤖 Downloading AI models for Kiosk LLM..."
+echo "🤖 Downloading AI models for Koisk LLM..."
 
 # Create models directory
 mkdir -p data/models

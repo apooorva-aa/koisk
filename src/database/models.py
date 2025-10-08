@@ -1,5 +1,5 @@
 """
-Database Models for Kiosk LLM System.
+Database Models for Koisk LLM System.
 Consolidated database schema and models.
 """
 
@@ -14,9 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 class DatabaseManager:
-    """Centralized database management for all Kiosk LLM data."""
+    """Centralized database management for all Koisk LLM data."""
     
-    def __init__(self, db_path: str = "data/kiosk_llm.db"):
+    def __init__(self, db_path: str = "data/koisk.db"):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.connection = None

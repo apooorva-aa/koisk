@@ -1,0 +1,302 @@
+{
+  "info": {
+    "_postman_id": "koisk-llm-api-collection",
+    "name": "Koisk LLM API",
+    "description": "Postman collection for testing the Koisk LLM FastAPI endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health & Status",
+      "item": [
+        {
+          "name": "Root Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Get basic API status and welcome message"
+          },
+          "response": []
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Check the health status of all components"
+          },
+          "response": []
+        }
+      ],
+      "description": "Basic health and status endpoints"
+    },
+    {
+      "name": "Interaction Endpoints",
+      "item": [
+        {
+          "name": "Text Interaction - Hello",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"Hello, how are you?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/interact",
+              "host": ["{{base_url}}"],
+              "path": ["interact"]
+            },
+            "description": "Test basic text interaction with greeting"
+          },
+          "response": []
+        },
+        {
+          "name": "Text Interaction - Help Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"Can you help me with something?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/interact",
+              "host": ["{{base_url}}"],
+              "path": ["interact"]
+            },
+            "description": "Test help request interaction"
+          },
+          "response": []
+        },
+        {
+          "name": "Text Interaction - Thank You",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"Thank you for your help\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/interact",
+              "host": ["{{base_url}}"],
+              "path": ["interact"]
+            },
+            "description": "Test thank you interaction"
+          },
+          "response": []
+        },
+        {
+          "name": "Text Interaction - General Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"What services do you offer?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/interact",
+              "host": ["{{base_url}}"],
+              "path": ["interact"]
+            },
+            "description": "Test general question interaction"
+          },
+          "response": []
+        },
+        {
+          "name": "Audio Interaction (Mock)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"audio_file\": \"test_audio.wav\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/interact",
+              "host": ["{{base_url}}"],
+              "path": ["interact"]
+            },
+            "description": "Test audio file interaction (currently returns mock response)"
+          },
+          "response": []
+        },
+        {
+          "name": "Empty Request (Error Test)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/interact",
+              "host": ["{{base_url}}"],
+              "path": ["interact"]
+            },
+            "description": "Test error handling with empty request"
+          },
+          "response": []
+        }
+      ],
+      "description": "Main interaction endpoints for testing the AI assistant"
+    },
+    {
+      "name": "API Documentation",
+      "item": [
+        {
+          "name": "OpenAPI JSON",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/openapi.json",
+              "host": ["{{base_url}}"],
+              "path": ["openapi.json"]
+            },
+            "description": "Get OpenAPI specification in JSON format"
+          },
+          "response": []
+        },
+        {
+          "name": "Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/docs",
+              "host": ["{{base_url}}"],
+              "path": ["docs"]
+            },
+            "description": "Access Swagger UI documentation (open in browser)"
+          },
+          "response": []
+        },
+        {
+          "name": "ReDoc Documentation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/redoc",
+              "host": ["{{base_url}}"],
+              "path": ["redoc"]
+            },
+            "description": "Access ReDoc documentation (open in browser)"
+          },
+          "response": []
+        }
+      ],
+      "description": "API documentation endpoints"
+    },
+    {
+      "name": "Error Testing",
+      "item": [
+        {
+          "name": "Invalid Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/invalid",
+              "host": ["{{base_url}}"],
+              "path": ["invalid"]
+            },
+            "description": "Test 404 error handling"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid JSON",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"Hello\",\n    \"invalid_json\": \n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/interact",
+              "host": ["{{base_url}}"],
+              "path": ["interact"]
+            },
+            "description": "Test invalid JSON handling"
+          },
+          "response": []
+        }
+      ],
+      "description": "Error handling and edge case testing"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+}

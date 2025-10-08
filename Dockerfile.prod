@@ -39,8 +39,8 @@ ENV PYTHONPATH=/app/src
 ENV PYTHONUNBUFFERED=1
 
 # Create non-root user for security
-RUN useradd -m -u 1000 kiosk && chown -R kiosk:kiosk /app
-USER kiosk
+RUN useradd -m -u 1000 koisk && chown -R koisk:koisk /app
+USER koisk
 
 # Expose port for FastAPI
 EXPOSE 8000

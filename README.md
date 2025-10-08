@@ -1,23 +1,26 @@
-# Kiosk LLM - Fine-Tuned AI Assistant for India
+# Koisk LLM - Fine-Tuned AI Assistant for India
 
-A privacy-preserving kiosk assistant running on Raspberry Pi 4, powered by local LLM with multilingual support (English/Hindi). Features face detection, speech input, RAG-powered responses, and text-to-speech output - all running locally for complete privacy and offline capability.
+A privacy-preserving koisk assistant running on Raspberry Pi 4, powered by local LLM with multilingual support (English/Hindi). Features face detection, speech input, RAG-powered responses, and text-to-speech output - all running locally for complete privacy and offline capability.
 
 ## Quick Start
 
 ### Prerequisites
 
-- **Docker** and **Docker Compose**
-- **WSL** if you are on Windows (do not use Docker Desktop please)
+- **Docker** and **Docker Compose** (do not use Docker Desktop please)
+- **WSL** if you are on Windows
 - **uv** (fast Python package manager)
 - **Git**
 
 ### Development Setup
 
+The following steps are not intended for Windows, they will work perfectly fine on WSL, Linux and MacOS.
+
 1. **Clone and setup**:
 
    ```bash
-   git clone <your-repo-url> kiosk-llm
-   cd kiosk-llm
+   git clone git@github.com:apooorva-aa/koisk.git
+   cd koisk
+   chmod +x ./scripts/setup-dev.sh
    ./scripts/setup-dev.sh
    ```
 
@@ -38,12 +41,12 @@ A privacy-preserving kiosk assistant running on Raspberry Pi 4, powered by local
 1. **Setup on Pi**:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/your-repo/kiosk-llm/main/scripts/setup-pi.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/apooorva-aa/koisk/refs/heads/main/scripts/setup-pi.sh | bash
    ```
 
 2. **Start service**:
    ```bash
-   sudo systemctl start kiosk-llm
+   sudo systemctl start koisk
    ```
 
 ## Architecture
@@ -64,7 +67,7 @@ A privacy-preserving kiosk assistant running on Raspberry Pi 4, powered by local
 ## Project Structure
 
 ```
-kiosk-llm/
+koisk/
 ├── src/
 │   ├── main.py                 # FastAPI application
 │   ├── components/             # Core AI components
@@ -105,7 +108,7 @@ docker-compose -f docker-compose.dev.yml up -d
 docker-compose -f docker-compose.dev.yml logs -f
 
 # Access container shell
-docker-compose -f docker-compose.dev.yml exec kiosk-llm bash
+docker-compose -f docker-compose.dev.yml exec koisk bash
 
 # Stop environment
 docker-compose -f docker-compose.dev.yml down
@@ -115,10 +118,10 @@ docker-compose -f docker-compose.dev.yml down
 
 ```bash
 # Build for multiple architectures
-docker buildx build --platform linux/amd64,linux/arm64 -t kiosk-llm:latest .
+docker buildx build --platform linux/amd64,linux/arm64 -t koisk:latest .
 
 # Test ARM64 build locally
-docker run --platform linux/arm64 kiosk-llm:latest
+docker run --platform linux/arm64 koisk:latest
 ```
 
 ## Database Schema
@@ -215,13 +218,13 @@ Edit `config/config.yaml` to customize:
 
 ## Key Features
 
-- ** Privacy-First**: All processing happens locally
-- ** Multilingual**: English and Hindi support
-- ** Offline Capable**: Works without internet
-- ** Cost-Effective**: ~Rs. 10,500 per unit (4GB Pi 4 model)
-- ** Voice + Text**: Flexible interaction methods
-- ** RAG-Powered**: Context-aware responses
-- ** Face Detection**: Automatic session management
+- **Privacy-First**: All processing happens locally
+- **Multilingual**: English and Hindi support
+- **Offline Capable**: Works without internet
+- **Cost-Effective**: ~Rs. 10,500 per unit (4GB Pi 4 model)
+- **Voice + Text**: Flexible interaction methods
+- **RAG-Powered**: Context-aware responses
+- **Face Detection**: Automatic session management
 
 ## Deployment
 
@@ -236,7 +239,7 @@ docker-compose -f docker-compose.dev.yml up
 
 ```bash
 ./scripts/setup-pi.sh
-sudo systemctl start kiosk-llm
+sudo systemctl start koisk
 ```
 
 ## Performance (Pi 4 4GB)
@@ -252,10 +255,10 @@ sudo systemctl start kiosk-llm
 
 ```bash
 # Check service status
-sudo systemctl status kiosk-llm
+sudo systemctl status koisk
 
 # View logs
-sudo journalctl -u kiosk-llm -f
+sudo journalctl -u koisk -f
 
 # Check Docker containers
 docker-compose -f docker-compose.prod.yml ps
@@ -267,20 +270,20 @@ docker-compose -f docker-compose.prod.yml ps
 
 ```bash
 # Access database directly
-sqlite3 data/kiosk_llm.db
+sqlite3 data/koisk.db
 
 # View database schema
-sqlite3 data/kiosk_llm.db ".schema"
+sqlite3 data/koisk.db ".schema"
 
 # Check table contents
-sqlite3 data/kiosk_llm.db "SELECT COUNT(*) FROM documents;"
-sqlite3 data/kiosk_llm.db "SELECT COUNT(*) FROM sessions;"
+sqlite3 data/koisk.db "SELECT COUNT(*) FROM documents;"
+sqlite3 data/koisk.db "SELECT COUNT(*) FROM sessions;"
 
 # Export data
-sqlite3 data/kiosk_llm.db ".dump" > backup.sql
+sqlite3 data/koisk.db ".dump" > backup.sql
 
 # Import data
-sqlite3 data/kiosk_llm.db < backup.sql
+sqlite3 data/koisk.db < backup.sql
 ```
 
 ### Database Analytics
@@ -345,11 +348,11 @@ docker-compose -f docker-compose.dev.yml up
 
 ## Contributing
 
-1. Fork the repository
+1. Clone the repository
 2. Create feature branch: `git checkout -b feature/amazing-feature`
 3. Commit changes: `git commit -m 'Add amazing feature'`
 4. Push to branch: `git push origin feature/amazing-feature`
-5. Open Pull Request
+5. Open Pull Request to the `stg` branch
 
 ## License
 

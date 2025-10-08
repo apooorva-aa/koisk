@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Raspberry Pi Setup Script
-# This script sets up the Kiosk LLM system on a Raspberry Pi
+# This script sets up the Koisk LLM system on a Raspberry Pi
 
 set -e
 
-echo "🍓 Setting up Kiosk LLM on Raspberry Pi..."
+echo "🍓 Setting up Koisk LLM on Raspberry Pi..."
 
 # Update system
 echo "📦 Updating system packages..."
@@ -69,16 +69,16 @@ sudo raspi-config nonint do_memory_split 128
 
 # Create systemd service
 echo "🔧 Creating systemd service..."
-sudo tee /etc/systemd/system/kiosk-llm.service > /dev/null <<EOF
+sudo tee /etc/systemd/system/koisk.service > /dev/null <<EOF
 [Unit]
-Description=Kiosk LLM Service
+Description=Koisk LLM Service
 After=docker.service
 Requires=docker.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/opt/kiosk-llm
+WorkingDirectory=/opt/koisk
 ExecStart=/usr/bin/docker-compose -f docker-compose.prod.yml up -d
 ExecStop=/usr/bin/docker-compose -f docker-compose.prod.yml down
 User=pi
@@ -90,23 +90,23 @@ EOF
 
 # Enable service
 sudo systemctl daemon-reload
-sudo systemctl enable kiosk-llm.service
+sudo systemctl enable koisk.service
 
 # Create application directory
 echo "📁 Creating application directory..."
-sudo mkdir -p /opt/kiosk-llm
-sudo chown pi:pi /opt/kiosk-llm
+sudo mkdir -p /opt/koisk
+sudo chown pi:pi /opt/koisk
 
 # Clone repository (if not already present)
-if [ ! -d "/opt/kiosk-llm/.git" ]; then
+if [ ! -d "/opt/koisk/.git" ]; then
     echo "📥 Cloning repository..."
-    cd /opt/kiosk-llm
-    git clone <your-repo-url> .
+    cd /opt/koisk
+    git clone https://github.com/apooorva-aa/koisk.git .
 fi
 
 # Set up environment
 echo "🌍 Setting up environment..."
-cd /opt/kiosk-llm
+cd /opt/koisk
 ./scripts/setup-dev.sh
 
 # Download models
@@ -122,13 +122,13 @@ sed -i 's/audio_device: "default"/audio_device: "plughw:1,0"/' config/production
 echo "✅ Raspberry Pi setup complete!"
 echo ""
 echo "🚀 To start the service:"
-echo "  sudo systemctl start kiosk-llm"
+echo "  sudo systemctl start koisk"
 echo ""
 echo "📊 To check status:"
-echo "  sudo systemctl status kiosk-llm"
+echo "  sudo systemctl status koisk"
 echo ""
 echo "📝 To view logs:"
-echo "  sudo journalctl -u kiosk-llm -f"
+echo "  sudo journalctl -u koisk -f"
 echo ""
 echo "🔄 To restart:"
-echo "  sudo systemctl restart kiosk-llm"
+echo "  sudo systemctl restart koisk"

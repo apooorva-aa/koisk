@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "koisk"
 version = "0.1.0"
-description = "Fine-tuned LLM Kiosk for India - Multilingual AI Assistant"
+description = "Fine-tuned LLM Koisk for India - Multilingual AI Assistant"
 authors = [
     {name = "Advay Bhagwat", email = "bcs_2023074@iiitm.ac.in"},
     {name = "Akshita Sure", email = "bcs_2023065@iiitm.ac.in"},

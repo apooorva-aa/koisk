@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Development Environment Setup Script
-# This script sets up the development environment for Kiosk LLM
+# This script sets up the development environment for Koisk LLM
 
 set -e
 
-echo "🚀 Setting up Kiosk LLM Development Environment..."
+echo "🚀 Setting up Koisk LLM Development Environment..."
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null; then
@@ -56,7 +56,7 @@ echo "✅ Development environment setup complete!"
 echo ""
 echo "📋 Next steps:"
 echo "1. Start development environment: docker-compose -f docker-compose.dev.yml up"
-echo "2. Run tests: docker-compose -f docker-compose.dev.yml exec kiosk-llm pytest"
+echo "2. Run tests: docker-compose -f docker-compose.dev.yml exec koisk pytest"
 echo "3. Access API: http://localhost:8000"
 echo "4. View logs: docker-compose -f docker-compose.dev.yml logs -f"
 echo ""
@@ -64,4 +64,4 @@ echo "🔧 Development commands:"
 echo "  Start: docker-compose -f docker-compose.dev.yml up -d"
 echo "  Stop:  docker-compose -f docker-compose.dev.yml down"
 echo "  Logs:  docker-compose -f docker-compose.dev.yml logs -f"
-echo "  Shell: docker-compose -f docker-compose.dev.yml exec kiosk-llm bash"
+echo "  Shell: docker-compose -f docker-compose.dev.yml exec koisk bash"
