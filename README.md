@@ -68,32 +68,32 @@ kiosk-llm/
 ├── src/
 │   ├── main.py                 # FastAPI application
 │   ├── components/             # Core AI components
-│   │   ├── face_detection.py  # OpenCV face detection
-│   │   ├── asr.py            # Whisper speech-to-text
-│   │   ├── llm_inference.py  # Llama.cpp LLM server
-│   │   ├── rag.py            # SQLite vector search
-│   │   ├── tts.py            # Piper text-to-speech
-│   │   └── session_manager.py # User session handling
-│   ├── database/              # Database models and management
-│   │   └── models.py         # Consolidated database schema
+│   │   ├── face_detection.py   # OpenCV face detection
+│   │   ├── asr.py              # Whisper speech-to-text
+│   │   ├── llm_inference.py    # Llama.cpp LLM server
+│   │   ├── rag.py              # SQLite vector search
+│   │   ├── tts.py              # Piper text-to-speech
+│   │   └── session_manager.py  # User session handling
+│   ├── database/               # Database models and management
+│   │   └── models.py           # Consolidated database schema
 │   └── utils/
-│       ├── config.py         # Configuration management
-│       └── logging.py        # Logging setup
+│       ├── config.py           # Configuration management
+│       └── logging.py          # Logging setup
 ├── config/
-│   └── config.yaml           # Application configuration
+│   └── config.yaml             # Application configuration
 ├── scripts/
-│   ├── setup-dev.sh         # Development setup
-│   ├── setup-pi.sh          # Pi deployment
-│   └── download-models.sh   # Model downloading
-├── docker-compose.dev.yml   # Development environment
-├── docker-compose.prod.yml  # Production environment
-└── data/                    # Models, logs, knowledge base
-    ├── models/              # AI model files
-    ├── knowledge_base/      # RAG knowledge base
-    └── logs/               # Application logs
+│   ├── setup-dev.sh            # Development setup
+│   ├── setup-pi.sh             # Pi deployment
+│   └── download-models.sh      # Model downloading
+├── docker-compose.dev.yml      # Development environment
+├── docker-compose.prod.yml     # Production environment
+└── data/                       # Models, logs, knowledge base
+    ├── models/                 # AI model files
+    ├── knowledge_base/         # RAG knowledge base
+    └── logs/                   # Application logs
 ```
 
-##  Development Workflow
+## Development Workflow
 
 ### Local Development
 
@@ -121,7 +121,7 @@ docker buildx build --platform linux/amd64,linux/arm64 -t kiosk-llm:latest .
 docker run --platform linux/arm64 kiosk-llm:latest
 ```
 
-##  Database Schema
+## Database Schema
 
 The system uses a consolidated SQLite database with the following tables:
 
@@ -142,7 +142,7 @@ The system uses a consolidated SQLite database with the following tables:
 - **Multi-language**: Support for English and Hindi content
 - **Categorization**: Document organization by category
 
-##  AI Models & Sources
+## AI Models & Sources
 
 ### Required Models
 
@@ -191,7 +191,7 @@ The system uses a consolidated SQLite database with the following tables:
 - **Total Model Size**: ~754MB (TinyLlama + Whisper + Embeddings + TTS)
 - **Available RAM**: ~3GB for system and application
 
-##  Configuration
+## Configuration
 
 Edit `config/config.yaml` to customize:
 
@@ -201,7 +201,7 @@ Edit `config/config.yaml` to customize:
 - **Session**: Timeout, conversation history
 - **Database**: SQLite configuration and paths
 
-##  API Endpoints
+## API Endpoints
 
 - `GET /` - Root endpoint
 - `GET /health` - Health check
@@ -213,7 +213,7 @@ Edit `config/config.yaml` to customize:
   }
   ```
 
-##  Key Features
+## Key Features
 
 - ** Privacy-First**: All processing happens locally
 - ** Multilingual**: English and Hindi support
@@ -223,7 +223,7 @@ Edit `config/config.yaml` to customize:
 - ** RAG-Powered**: Context-aware responses
 - ** Face Detection**: Automatic session management
 
-##  Deployment
+## Deployment
 
 ### Development
 
@@ -239,7 +239,7 @@ docker-compose -f docker-compose.dev.yml up
 sudo systemctl start kiosk-llm
 ```
 
-##  Performance (Pi 4 4GB)
+## Performance (Pi 4 4GB)
 
 - **Face Detection**: ~15-20 FPS
 - **ASR**: ~2-3x real-time processing
@@ -248,7 +248,7 @@ sudo systemctl start kiosk-llm
 - **Total Response Time**: 2-5 seconds
 - **Memory Usage**: ~2.5GB peak (within 4GB limit)
 
-##  Monitoring
+## Monitoring
 
 ```bash
 # Check service status
@@ -261,7 +261,7 @@ sudo journalctl -u kiosk-llm -f
 docker-compose -f docker-compose.prod.yml ps
 ```
 
-##  Database Management
+## Database Management
 
 ### Database Operations
 
@@ -315,7 +315,7 @@ FROM performance_metrics
 GROUP BY component, metric_name;
 ```
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -335,7 +335,7 @@ export LOG_LEVEL=DEBUG
 docker-compose -f docker-compose.dev.yml up
 ```
 
-##  Next Steps
+## Next Steps
 
 1. **Customize Knowledge Base**: Add domain-specific information
 2. **Train Custom Models**: Fine-tune for specific use cases
@@ -343,7 +343,7 @@ docker-compose -f docker-compose.dev.yml up
 4. **Scale Deployment**: Deploy to multiple kiosks
 5. **Monitor & Analytics**: Add usage tracking
 
-##  Contributing
+## Contributing
 
 1. Fork the repository
 2. Create feature branch: `git checkout -b feature/amazing-feature`
@@ -351,11 +351,11 @@ docker-compose -f docker-compose.dev.yml up
 4. Push to branch: `git push origin feature/amazing-feature`
 5. Open Pull Request
 
-##  License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-##  Acknowledgments
+## Acknowledgments
 
 - [Llama.cpp](https://github.com/ggerganov/llama.cpp) for efficient LLM inference
 - [Whisper](https://github.com/openai/whisper) for speech recognition
