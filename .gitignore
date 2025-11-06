@@ -23,3 +23,7 @@ build/
 
 # Sphinx documentation
 docs/_build/
+
+# data
+data/logs/*
+data/models/

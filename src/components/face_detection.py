@@ -10,13 +10,22 @@ import logging
 logger = logging.getLogger(__name__)
 
 class FaceDetector:
-    def __init__(self, detection_confidence=0.6):
+    def __init__(self, config):
+        face_cfg = config.get("face_detection", {})
+        self.model_selection = int(face_cfg.get("model_selection", 0))
+
+        conf = face_cfg.get("min_detection_confidence", 0.6)
+        try:
+            self.confidence = float(conf)
+        except:
+            self.confidence = 0.6
+
         self.mp_face = mp.solutions.face_detection
         self.detector = self.mp_face.FaceDetection(
-            model_selection=0,
-            min_detection_confidence=detection_confidence
+            model_selection=self.model_selection,
+            min_detection_confidence=self.confidence
         )
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(config.get("hardware", {}).get("camera_index", 0))
 
     def _get_frame(self):
         ret, frame = self.cap.read()

@@ -26,13 +26,14 @@ class ASRComponent:
         """Initialize the ASR component."""
         try:
             logger.info("Initializing ASR component...")
-            
-            # Load Whisper model
-            model_name = self.config.get('models', {}).get('whisper_model', 'base')
-            logger.info(f"Loading Whisper model: {model_name}")
-            
+
+            model_name = self.config.get("models", {}).get("whisper_model", "base")
+            compute_type = self.config.get("models", {}).get("whisper_precision", "float32")
+
+            logger.info(f"Loading Whisper model: {model_name} (dtype={compute_type})")
+
             self.model = whisper.load_model(model_name)
-            
+
             self.is_initialized = True
             logger.info("ASR component initialized successfully")
             
@@ -51,6 +52,7 @@ class ASRComponent:
         Returns:
             Transcribed text or None if failed
         """
+        
         if not self.is_initialized:
             logger.warning("ASR not initialized")
             return None
@@ -58,24 +60,24 @@ class ASRComponent:
         try:
             logger.debug("Transcribing audio...")
             
-            # Save audio to temporary file for Whisper
-            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
-                temp_path = Path(temp_file.name)
+            # save audio to temporary wav file
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+                temp_path = Path(tmp.name)
                 
-                # Convert numpy array to audio file
+                # convert numpy array to audio file
                 import soundfile as sf
                 sf.write(temp_path, audio_data, sample_rate)
                 
-                # Transcribe using Whisper
+                # transcribe
                 result = self.model.transcribe(str(temp_path))
                 
-                # Clean up temporary file
-                temp_path.unlink()
+                # clean up temporary file
+                temp_path.unlink(missing_ok=True)
                 
-                text = result["text"].strip()
-                logger.debug(f"Transcribed text: {text}")
+                text = result.get("text", "").strip()
+                logger.info(f"ASR (audio buffer) → {text}")
                 
-                return text if text else None
+                return text or None
                 
         except Exception as e:
             logger.error(f"Error in audio transcription: {e}")
@@ -83,14 +85,9 @@ class ASRComponent:
     
     async def transcribe_file(self, audio_file_path: str) -> Optional[str]:
         """
-        Transcribe audio file to text.
-        
-        Args:
-            audio_file_path: Path to audio file
-            
-        Returns:
-            Transcribed text or None if failed
+        Convert an audio file (wav/mp3/etc) to text using Whisper.
         """
+        
         if not self.is_initialized:
             logger.warning("ASR not initialized")
             return None
@@ -99,10 +96,10 @@ class ASRComponent:
             logger.debug(f"Transcribing audio file: {audio_file_path}")
             
             result = self.model.transcribe(audio_file_path)
-            text = result["text"].strip()
+            text = result.get("text", "").strip()
             
-            logger.debug(f"Transcribed text: {text}")
-            return text if text else None
+            logger.info(f"ASR (audio buffer) → {text}")
+            return text or None
             
         except Exception as e:
             logger.error(f"Error in file transcription: {e}")

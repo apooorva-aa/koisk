@@ -4,22 +4,16 @@ Main application entry point for Koisk LLM system.
 """
 
 import asyncio
-import logging
 import sys
-from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 import uvicorn
 
-from components.face_detection import FaceDetectionComponent
-from components.asr import ASRComponent
-from components.llm_inference import LLMComponent
-from components.rag import RAGComponent
-from components.tts import TTSComponent
-from components.session_manager import SessionManager
 from utils.config import load_config
 from utils.logging import setup_logging
+from services.audio_recorder import record_user_voice
+from services.component_manager import ComponentManager
 
 # Setup logging
 logger = setup_logging()
@@ -30,41 +24,21 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# Global components (will be initialized in startup)
-face_detector = None
-asr_component = None
-llm_component = None
-rag_component = None
-tts_component = None
-session_manager = None
-
+components = None
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize all components on startup."""
-    global face_detector, asr_component, llm_component, rag_component, tts_component, session_manager
+    
+    global components
     
     try:
         logger.info("Starting Koisk LLM system...")
         
-        # Load configuration
         config = load_config()
+        components = ComponentManager(config)    
         
-        # Initialize components
-        face_detector = FaceDetectionComponent(config)
-        asr_component = ASRComponent(config)
-        llm_component = LLMComponent(config)
-        rag_component = RAGComponent(config)
-        tts_component = TTSComponent(config)
-        session_manager = SessionManager(config)
-        
-        # Initialize components
-        await face_detector.initialize()
-        await asr_component.initialize()
-        await llm_component.initialize()
-        await rag_component.initialize()
-        await tts_component.initialize()
-        await session_manager.initialize()
+        await components.initialize_all()
         
         logger.info("All components initialized successfully!")
         
@@ -78,16 +52,8 @@ async def shutdown_event():
     """Cleanup on shutdown."""
     logger.info("Shutting down Koisk LLM system...")
     
-    if session_manager:
-        await session_manager.cleanup()
-    if tts_component:
-        await tts_component.cleanup()
-    if llm_component:
-        await llm_component.cleanup()
-    if asr_component:
-        await asr_component.cleanup()
-    if face_detector:
-        await face_detector.cleanup()
+    if components:
+        await components.cleanup_all()
 
 
 @app.get("/")
@@ -102,39 +68,49 @@ async def health_check():
     return {
         "status": "healthy",
         "components": {
-            "face_detection": face_detector is not None,
-            "asr": asr_component is not None,
-            "llm": llm_component is not None,
-            "rag": rag_component is not None,
-            "tts": tts_component is not None,
-            "session_manager": session_manager is not None
+            "face_detection": components.face_detector is not None,
+            "asr": components.asr is not None,
+            "llm": components.llm is not None,
+            "rag": components.rag is not None,
+            "tts": components.tts is not None,
+            "session_manager": components.session_manager is not None
         }
     }
 
 
 @app.post("/interact")
-async def interact(text: str = None, audio_file: str = None):
+async def interact(text: str = None):
     """Main interaction endpoint."""
     try:
-        if not session_manager:
+        if not components.session_manager:
             raise HTTPException(status_code=503, detail="Session manager not initialized")
         
-        # Process input (text or audio)
-        if audio_file:
-            # TODO: Process audio file through ASR
-            user_input = "Hello from audio input"  # Placeholder
-        elif text:
-            user_input = text
-        else:
-            raise HTTPException(status_code=400, detail="Either text or audio_file must be provided")
+        # case 1 : text input bypasses ASR
+        if text:
+            user_input = text.strip()
+        # case 2 : send to whisper ASR if audio file is provided
+        else :
+            if not components.asr:
+                raise HTTPException(status_code=503, detail="ASR component not initialized")
+
+            print("How may I help you? (Waiting for voice input...)")
+
+            # start recording
+            audio_np, sr = await record_user_voice(duration=5)
+
+            # transcribe
+            user_input = await components.asr.transcribe_audio(audio_np, sr)
+
+            if not user_input:
+                raise HTTPException(status_code=500, detail="Voice not detected or transcription failed")
         
-        # Generate response
-        response = await session_manager.process_interaction(user_input)
+        # pass input to session manager for processing
+        response = await components.session_manager.process_interaction(user_input)
         
         return {
             "user_input": user_input,
             "response": response,
-            "session_id": session_manager.current_session_id
+            "session_id": components.session_manager.current_session_id
         }
         
     except Exception as e:
@@ -144,6 +120,7 @@ async def interact(text: str = None, audio_file: str = None):
 
 async def main():
     """Main application entry point."""
+    
     logger.info("Starting Koisk LLM application...")
     
     # Run the FastAPI server
