@@ -1,108 +1,116 @@
 """
 Face Detection Component using OpenCV.
-Simplified implementation for initial development.
 """
 
-import asyncio
-import logging
-from typing import Optional, Tuple
 import cv2
-import numpy as np
+import mediapipe as mp
+import time
+import logging
 
 logger = logging.getLogger(__name__)
 
+class FaceDetector:
+    def __init__(self, detection_confidence=0.6):
+        self.mp_face = mp.solutions.face_detection
+        self.detector = self.mp_face.FaceDetection(
+            model_selection=0,
+            min_detection_confidence=detection_confidence
+        )
+        self.cap = cv2.VideoCapture(0)
 
-class FaceDetectionComponent:
-    """Face detection component using OpenCV Haar cascades."""
+    def _get_frame(self):
+        ret, frame = self.cap.read()
+        if not ret:
+            return None
+        return frame
+
+    def _detect_face(self, frame):
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        result = self.detector.process(rgb)
+        detections = result.detections if result.detections else []
+        return len(detections) > 0, detections
     
-    def __init__(self, config):
-        self.config = config
-        self.camera = None
-        self.face_cascade = None
-        self.is_initialized = False
+    def _draw_boxes(self, frame, detections):
+        h, w, _ = frame.shape
+        for det in detections:
+            box = det.location_data.relative_bounding_box
+            x1 = int(box.xmin * w)
+            y1 = int(box.ymin * h)
+            x2 = int((box.xmin + box.width) * w)
+            y2 = int((box.ymin + box.height) * h)
+
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+
+    def wait_for_face(self):
+        """Blocking loop until a face is detected."""
         
-    async def initialize(self):
-        """Initialize the face detection component."""
-        try:
-            logger.info("Initializing face detection component...")
+        print("Waiting for face...")
+
+        while True:
+            frame = self._get_frame()
+            if frame is None:
+                continue
             
-            # Load Haar cascade for face detection
-            self.face_cascade = cv2.CascadeClassifier(
-                cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
-            )
+            face_found, detections = self._detect_face(frame)
             
-            # Initialize camera
-            camera_index = self.config.get('hardware', {}).get('camera_index', 0)
-            self.camera = cv2.VideoCapture(camera_index)
-            
-            if not self.camera.isOpened():
-                logger.warning(f"Could not open camera {camera_index}, using mock mode")
-                self.camera = None
-            
-            self.is_initialized = True
-            logger.info("Face detection component initialized successfully")
-            
-        except Exception as e:
-            logger.error(f"Failed to initialize face detection: {e}")
-            raise
-    
-    async def detect_face(self) -> Tuple[bool, Optional[dict]]:
-        """
-        Detect if a face is present in the camera feed.
+            if face_found:
+                self._draw_boxes(frame, detections)
+                print("Face Detected — Starting Session")
+                return True
+
+            cv2.imshow("Camera — Waiting for Face", frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        return False
+
+    def monitor_session(self, timeout=10):
+        """Returns False if no face is detected for <timeout> seconds."""
         
-        Returns:
-            Tuple of (face_detected, face_info)
-        """
-        if not self.is_initialized:
-            logger.warning("Face detection not initialized")
-            return False, None
-        
-        try:
-            if self.camera is None:
-                # Mock mode for development
-                logger.debug("Mock face detection - returning True")
-                return True, {"confidence": 0.8, "bbox": (100, 100, 200, 200)}
+        print("Session Started — Monitoring face presence...")
+        last_seen = time.time()
+
+        while True:
+            frame = self._get_frame()
+            if frame is None:
+                continue
             
-            # Capture frame
-            ret, frame = self.camera.read()
-            if not ret:
-                logger.warning("Failed to capture frame")
-                return False, None
+            face_found, detections = self._detect_face(frame)
+
+            if face_found:
+                last_seen = time.time()
+                self._draw_boxes(frame, detections)
+
+            status_text = "Face detected" if face_found else "No face"
+            cv2.putText(frame, status_text, (20, 40),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0) if face_found else (0,0,255), 2)
+
+            cv2.imshow("Session Monitoring", frame)
+
+            # Timeout check
+            if time.time() - last_seen > timeout:
+                print("No face detected for", timeout, "seconds — Ending Session")
+                return False
             
-            # Convert to grayscale
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            
-            # Detect faces
-            faces = self.face_cascade.detectMultiScale(
-                gray,
-                scaleFactor=1.1,
-                minNeighbors=5,
-                minSize=(30, 30)
-            )
-            
-            if len(faces) > 0:
-                # Return the largest face
-                largest_face = max(faces, key=lambda x: x[2] * x[3])
-                x, y, w, h = largest_face
-                
-                face_info = {
-                    "confidence": 0.9,
-                    "bbox": (x, y, w, h),
-                    "center": (x + w//2, y + h//2)
-                }
-                
-                logger.debug(f"Face detected: {face_info}")
-                return True, face_info
-            
-            return False, None
-            
-        except Exception as e:
-            logger.error(f"Error in face detection: {e}")
-            return False, None
-    
-    async def cleanup(self):
-        """Cleanup resources."""
-        if self.camera:
-            self.camera.release()
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        return False
+
+    def release(self):
+        self.cap.release()
         cv2.destroyAllWindows()
-        logger.info("Face detection component cleaned up")
+
+
+if __name__ == "__main__":
+    face = FaceDetector()
+    
+    session_start = face.wait_for_face()
+
+    if session_start:
+        face.monitor_session(timeout=10)
+
+    face.release()
+
+
