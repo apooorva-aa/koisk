@@ -6,6 +6,7 @@ import cv2
 import mediapipe as mp
 import time
 import logging
+from utils.config import load_config
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +114,8 @@ class FaceDetector:
 
 
 if __name__ == "__main__":
-    face = FaceDetector()
+    config = load_config()
+    face = FaceDetector(config)
     
     session_start = face.wait_for_face()
 

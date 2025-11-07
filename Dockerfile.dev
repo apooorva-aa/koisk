@@ -2,7 +2,8 @@ FROM python:3.11-slim
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+    build-essential \
+    gcc \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
@@ -20,8 +21,8 @@ RUN pip install uv
 # Set working directory
 WORKDIR /app
 
-# Copy dependency files
-COPY pyproject.toml ./
+# Copy required files for package installation
+COPY pyproject.toml README.md ./
 
 # Install Python dependencies
 RUN uv pip install --system -e .
