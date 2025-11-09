@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk - Voice Chat</title>
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body onload="checkAuth()">
+    <div class="container">
+        <div class="chat-screen">
+            <div class="header">
+                <button class="btn-icon" onclick="goHome()">🏠</button>
+                <h2>Voice Chat Assistant</h2>
+                <button class="btn-icon" onclick="clearChat()">🗑️</button>
+            </div>
+
+            <div class="language-selector">
+                <select id="language-select" class="language-dropdown" onchange="setLanguage(this.value)">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी (Hindi)</option>
+                </select>
+            </div>
+
+            <div id="chat-messages" class="chat-messages">
+                <div class="message bot">
+                    <div class="message-content">
+                        Hello! Press and hold the microphone button to speak.
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-controls">
+                <button
+                    id="mic-btn"
+                    class="mic-btn"
+                    onmousedown="startRecording()"
+                    onmouseup="stopRecording()"
+                    ontouchstart="startRecording()"
+                    ontouchend="stopRecording()"
+                >
+                    <span class="mic-icon">🎤</span>
+                    <div class="mic-text">Hold to Speak</div>
+                </button>
+                <div id="recording-status" class="recording-status"></div>
+            </div>
+
+            <button class="admin-btn" onclick="navigate('admin.html')">⚙️</button>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+    <script src="audio-llm.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk - Login</title>
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-box">
+            <h1>Kiosk Assistant</h1>
+            <p class="subtitle">Privacy-Preserving Local LLM</p>
+
+            <div class="auth-options">
+                <button class="btn btn-primary btn-large" onclick="guestLogin()">
+                    Continue as Guest
+                </button>
+
+                <div class="divider">or</div>
+
+                <form onsubmit="adminLogin(event)" class="admin-form">
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="Admin Username"
+                        required
+                    >
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Admin Password"
+                        required
+                    >
+                    <button type="submit" class="btn btn-secondary">
+                        Admin Login
+                    </button>
+                </form>
+
+                <div id="error-msg" class="error-msg"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>

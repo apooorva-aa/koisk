@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk - Text Chat</title>
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body onload="checkAuth()">
+    <div class="container">
+        <div class="chat-screen">
+            <div class="header">
+                <button class="btn-icon" onclick="goHome()">🏠</button>
+                <h2>Text Chat Assistant</h2>
+                <button class="btn-icon" onclick="clearChat()">🗑️</button>
+            </div>
+
+            <div class="language-selector">
+                <select id="language-select" class="language-dropdown" onchange="setLanguage(this.value)">
+                    <option value="en" selected>English</option>
+                    <option value="hi">हिन्दी (Hindi)</option>
+                </select>
+            </div>
+
+            <div id="chat-messages" class="chat-messages">
+                <div class="message bot">
+                    <div class="message-content">
+                        Hello! I'm your local AI assistant. How can I help you today?
+                    </div>
+                </div>
+            </div>
+
+            <form class="chat-input" onsubmit="sendMessage(event)">
+                <input
+                    type="text"
+                    id="user-input"
+                    placeholder="Type your message..."
+                    autocomplete="off"
+                >
+                <button type="submit" class="btn-send">Send</button>
+            </form>
+
+            <button class="admin-btn" onclick="navigate('admin.html')">⚙️</button>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+    <script src="text-llm.js"></script>
+</body>
+</html>

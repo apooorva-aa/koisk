@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk - Admin</title>
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body onload="checkAdminAuth()">
+    <div class="container">
+        <div class="admin-screen">
+            <div class="header">
+                <button class="btn-icon" onclick="goHome()">🏠</button>
+                <h2>Admin Panel</h2>
+                <button class="btn-icon" onclick="logout()">🚪</button>
+            </div>
+
+            <div class="admin-options">
+                <div class="option-card" onclick="navigate('usage-stats.html')">
+                    <div class="icon">📊</div>
+                    <h3>Usage Statistics</h3>
+                    <p>View system usage and analytics</p>
+                </div>
+
+                <div class="option-card" onclick="navigate('kb-ingest.html')">
+                    <div class="icon">📚</div>
+                    <h3>Knowledge Base</h3>
+                    <p>Ingest documents and data</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+</body>
+</html>

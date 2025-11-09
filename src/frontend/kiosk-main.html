@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk - Main</title>
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-screen">
+            <h1>Welcome to Kiosk Assistant</h1>
+            <p class="subtitle">How can I help you today?</p>
+
+            <div class="options-grid">
+                <div class="option-card" onclick="navigate('text-llm.html')">
+                    <div class="icon">💬</div>
+                    <h3>Text Chat</h3>
+                    <p>Chat with AI assistant</p>
+                </div>
+
+                <div class="option-card" onclick="navigate('audio-llm.html')">
+                    <div class="icon">🎤</div>
+                    <h3>Voice Chat</h3>
+                    <p>Speak with AI assistant</p>
+                </div>
+
+                <div class="option-card" onclick="navigate('contact.html')">
+                    <div class="icon">📧</div>
+                    <h3>Contact Info</h3>
+                    <p>Get in touch with us</p>
+                </div>
+
+                <div class="option-card" onclick="navigate('find-place.html')">
+                    <div class="icon">🗺️</div>
+                    <h3>Find a Place</h3>
+                    <p>Navigate to locations</p>
+                </div>
+            </div>
+
+            <button class="admin-btn" onclick="navigate('admin.html')">⚙️</button>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+</body>
+</html>

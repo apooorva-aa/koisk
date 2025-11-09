@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk - Knowledge Base Ingest</title>
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body onload="checkAdminAuth()">
+    <div class="container">
+        <div class="kb-screen">
+            <div class="header">
+                <button class="btn-icon" onclick="navigate('admin.html')">←</button>
+                <h2>Knowledge Base Ingest</h2>
+                <button class="btn-icon" onclick="goHome()">🏠</button>
+            </div>
+
+            <div class="kb-tabs">
+                <button class="tab-btn active" onclick="switchTab('upload')">📄 Upload Documents</button>
+                <button class="tab-btn" onclick="switchTab('web')">🌐 Web Links</button>
+                <button class="tab-btn" onclick="switchTab('text')">✏️ Direct Text</button>
+            </div>
+
+            <div id="upload-tab" class="tab-content active">
+                <div class="upload-section">
+                    <h3>Upload Documents</h3>
+                    <p>Supported formats: PDF, TXT, DOC, DOCX</p>
+                    <input type="file" id="file-upload" multiple accept=".pdf,.txt,.doc,.docx">
+                    <button class="btn btn-primary" onclick="uploadFiles()">Upload Files</button>
+                    <div id="upload-status" class="status-msg"></div>
+                </div>
+
+                <div class="uploaded-files">
+                    <h4>Recently Uploaded</h4>
+                    <ul id="file-list">
+                        <li>example_document.pdf - 2024-01-15</li>
+                        <li>user_guide.txt - 2024-01-14</li>
+                        <li>faq_data.docx - 2024-01-13</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="web-tab" class="tab-content">
+                <div class="web-section">
+                    <h3>Add Web Links</h3>
+                    <p>Enter URLs to crawl and ingest content</p>
+                    <form onsubmit="addWebLink(event)">
+                        <input
+                            type="url"
+                            id="web-url"
+                            placeholder="https://example.com"
+                            required
+                        >
+                        <button type="submit" class="btn btn-primary">Add Link</button>
+                    </form>
+                    <div id="web-status" class="status-msg"></div>
+                </div>
+
+                <div class="uploaded-files">
+                    <h4>Ingested Links</h4>
+                    <ul id="web-list">
+                        <li>https://example.com/docs - 2024-01-15</li>
+                        <li>https://help.example.com - 2024-01-14</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="text-tab" class="tab-content">
+                <div class="text-section">
+                    <h3>Add Direct Text</h3>
+                    <p>Enter or paste text content to add to knowledge base</p>
+                    <form onsubmit="addText(event)">
+                        <input
+                            type="text"
+                            id="text-title"
+                            placeholder="Title"
+                            required
+                        >
+                        <textarea
+                            id="text-content"
+                            placeholder="Enter text content here..."
+                            rows="10"
+                            required
+                        ></textarea>
+                        <button type="submit" class="btn btn-primary">Add Text</button>
+                    </form>
+                    <div id="text-status" class="status-msg"></div>
+                </div>
+
+                <div class="uploaded-files">
+                    <h4>Text Entries</h4>
+                    <ul id="text-list">
+                        <li>Building Rules - 2024-01-15</li>
+                        <li>Emergency Contacts - 2024-01-14</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+    <script src="kb-ingest.js"></script>
+</body>
+</html>

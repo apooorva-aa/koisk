@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk - Usage Statistics</title>
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body onload="checkAdminAuth(); loadStats()">
+    <div class="container">
+        <div class="stats-screen">
+            <div class="header">
+                <button class="btn-icon" onclick="navigate('admin.html')">←</button>
+                <h2>Usage Statistics</h2>
+                <button class="btn-icon" onclick="goHome()">🏠</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-users">0</div>
+                    <div class="stat-label">Total Users Today</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value" id="text-chats">0</div>
+                    <div class="stat-label">Text Chats</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value" id="voice-chats">0</div>
+                    <div class="stat-label">Voice Chats</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value" id="place-searches">0</div>
+                    <div class="stat-label">Place Searches</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Daily Usage Trend</h3>
+                <canvas id="usage-chart" width="600" height="300"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3>Feature Usage Distribution</h3>
+                <canvas id="feature-chart" width="600" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+    <script src="usage-stats.js"></script>
+</body>
+</html>

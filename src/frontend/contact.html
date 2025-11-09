@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk - Contact Info</title>
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body onload="checkAuth()">
+    <div class="container">
+        <div class="info-screen">
+            <div class="header">
+                <button class="btn-icon" onclick="goHome()">🏠</button>
+                <h2>Contact Information</h2>
+                <span></span>
+            </div>
+
+            <div class="contact-card">
+                <h3>Kiosk Owner</h3>
+                <div class="contact-item">
+                    <span class="contact-label">Name:</span>
+                    <span class="contact-value">Admin Department</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Email:</span>
+                    <span class="contact-value">admin@kiosk.local</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Support Email:</span>
+                    <span class="contact-value">support@kiosk.local</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Phone:</span>
+                    <span class="contact-value">+91 1234567890</span>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <h3>Technical Support</h3>
+                <div class="contact-item">
+                    <span class="contact-label">Email:</span>
+                    <span class="contact-value">tech@kiosk.local</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Hours:</span>
+                    <span class="contact-value">9:00 AM - 6:00 PM</span>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <h3>Location</h3>
+                <div class="contact-item">
+                    <span class="contact-label">Address:</span>
+                    <span class="contact-value">Building A, Floor 1<br>Tech Campus<br>City, State - 123456</span>
+                </div>
+            </div>
+
+            <button class="admin-btn" onclick="navigate('admin.html')">⚙️</button>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+</body>
+</html>

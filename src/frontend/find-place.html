@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk - Find a Place</title>
+    <link rel="stylesheet" href="kiosk.css">
+</head>
+<body onload="checkAuth()">
+    <div class="container">
+        <div class="info-screen">
+            <div class="header">
+                <button class="btn-icon" onclick="goHome()">🏠</button>
+                <h2>Find a Place</h2>
+                <span></span>
+            </div>
+
+            <form class="search-form" onsubmit="searchPlace(event)">
+                <div class="search-inputs">
+                    <input
+                        type="text"
+                        id="place-search"
+                        placeholder="Enter destination..."
+                        autocomplete="off"
+                    >
+                    <select id="floor-select" class="floor-select">
+                        <option value="">Select Floor</option>
+                        <option value="G">Ground Floor</option>
+                        <option value="1">1st Floor</option>
+                        <option value="2">2nd Floor</option>
+                        <option value="3">3rd Floor</option>
+                        <option value="B">Basement</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-search">Search</button>
+            </form>
+
+            <div id="search-results" class="search-results"></div>
+
+            <button class="admin-btn" onclick="navigate('admin.html')">⚙️</button>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+    <script src="find-place.js"></script>
+</body>
+</html>
