@@ -47,33 +47,60 @@ COMMON_HEADERS = {
 }
 
 SOURCES = [
+    # Main homepage
     {
         'url': 'https://iiitm.ac.in/',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
+    
+    # Academics
     {
-        'url': 'https://www.iiitm.ac.in/index.php/en/academics-final/academic-programs',
+        'url': 'https://iiitm.ac.in/index.php/en/academics-final/academic-programs',
+        'headers': COMMON_HEADERS,
+        'timeout': 30,
+    },
+    
+    # Admissions
+    {
+        'url': 'https://iiitm.ac.in/index.php/en/admissions-final/ms-admission',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
     {
-        'url': 'https://www.iiitm.ac.in/index.php/en/component/content/category/97-admissions?Itemid=437',
+        'url': 'https://iiitm.ac.in/index.php/en/admissions-final/ug-integrated-ug-pg-admission/admission-to-b-tech-cse',
+        'headers': COMMON_HEADERS,
+        'timeout': 30, 
+    },
+    {
+        'url': 'https://iiitm.ac.in/index.php/en/admissions-final/ug-integrated-ug-pg-admission/admission-to-b-tech-eee',
+        'headers': COMMON_HEADERS,
+        'timeout': 30, 
+    },
+    {
+        'url': 'https://iiitm.ac.in/index.php/en/admissions-final/ug-integrated-ug-pg-admission/admission-to-b-tech-mathematics-scientific-computing',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
     {
-        'url': 'https://www.iiitm.ac.in/index.php/en/admissions-final/ms-admission',
+        'url': 'https://iiitm.ac.in/index.php/en/admissions-final/phd-admission',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
+    {
+        'url': 'https://iiitm.ac.in/index.php/en/admissions-final/eligibility-criteria',
+        'headers': COMMON_HEADERS,
+        'timeout': 30,
+    },
+    
+    # Administration
     {
         'url': 'https://iiitm.ac.in/index.php/en/111-administration',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
     {
-        'url': 'https://www.iiitm.ac.in/index.php/en/administration/director-s-message',
+        'url': 'https://iiitm.ac.in/index.php/en/administration/director-s-message',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
@@ -82,38 +109,85 @@ SOURCES = [
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
+    
+    # Campus Life
     {
-        'url': 'https://iiitm.ac.in/index.php/en/119-location',
+        'url': 'https://iiitm.ac.in/index.php/en/administration/campus-life/overview',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
     {
-        'url': 'https://www.iiitm.ac.in/index.php/en/academics-final/academic-programs#campus-life',
+        'url': 'https://iiitm.ac.in/index.php/en/administration/campus-life/students-hostels',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
     {
-        'url': 'https://iiitm.ac.in/index.php/en/administration/campus-life/overview#students-hostels',
+        'url': 'https://iiitm.ac.in/index.php/en/student/activities/sports',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
     {
-        'url': 'https://www.iiitm.ac.in/index.php/en/research-publications/88-books-published-by-abv-iiitm-gwalior-faculty',
+        'url': 'https://iiitm.ac.in/index.php/en/student/activities/cultural-events',
+        'headers': COMMON_HEADERS,
+        'timeout': 30,
+    },
+    
+    # Faculty
+    {
+        'url': 'https://www.iiitm.ac.in/index.php/en/component/splms/?view=teachers',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
     {
-        'url': 'https://www.iiitm.ac.in/index.php/en/component/content/article/79-latest-news/574-rules-for-change-of-branch-abv-iiitm-gwalior',
+        'url': 'https://www.iiitm.ac.in/index.php/en/faculty/research-areas',
+        'headers': COMMON_HEADERS,
+        'timeout': 30,
+    },
+    
+    # Research & Publications
+    {
+        'url': 'https://iiitm.ac.in/index.php/en/research-publications/88-books-published-by-abv-iiitm-gwalior-faculty',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
     {
-        'url': 'https://www.iiitm.ac.in/index.php/en/component/content/category/98-recruitment?Itemid=437',
+        'url': 'https://iiitm.ac.in/index.php/en/research-publications/87-research-papers',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
+    
+    # Recruitment / News
+    {
+        'url': 'https://iiitm.ac.in/index.php/en/component/content/category/98-recruitment?Itemid=437',
+        'headers': COMMON_HEADERS,
+        'timeout': 30,
+    },
+    {
+        'url': 'https://www.iiitm.ac.in/index.php/en/component/content/article/79-latest-news',
+        'headers': COMMON_HEADERS,
+        'timeout': 30,
+    },
+    
+    # FAQs / General Info
     {
         'url': 'https://iiitm.ac.in/index.php/en/166-faq-general',
+        'headers': COMMON_HEADERS,
+        'timeout': 30,
+    },
+    {
+        'url': 'https://collegedunia.com/university/25664-atal-bihari-vajpayee-indian-institute-of-information-technology-and-management-abviiitm-gwalior/reviews',
+        'headers': COMMON_HEADERS,
+        'timeout': 30,
+    },
+    {
+        'url': 'https://www.careers360.com/university/atal-bihari-vajpayee-indian-institute-of-information-technology-and-management-gwalior/reviews',
+        'headers': COMMON_HEADERS,
+        'timeout': 30,
+    },
+    
+    # External Overview
+    {
+        'url': 'https://en.wikipedia.org/wiki/Atal_Bihari_Vajpayee_Indian_Institute_of_Information_Technology_and_Management',
         'headers': COMMON_HEADERS,
         'timeout': 30,
     },
