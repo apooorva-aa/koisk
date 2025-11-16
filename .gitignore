@@ -26,3 +26,5 @@ docs/_build/
 
 # data
 data/
+
+src/scraped_data/

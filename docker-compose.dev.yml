@@ -14,6 +14,10 @@ services:
     environment:
       - ENV=development
       - LOG_LEVEL=DEBUG
+      - VECTOR_DB_URL=postgresql://postgres:postgres@postgres:5432/kiosk_db
+    depends_on:
+      postgres:
+        condition: service_healthy
     devices:
       # Camera device (comment out if not available)
       - /dev/video0:/dev/video0
@@ -21,7 +25,26 @@ services:
     tty: true
     restart: unless-stopped
 
-  # Database service for development
+  # PostgreSQL with pgvector for RAG knowledge base
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: kiosk-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kiosk_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # SQLite service (legacy, can be removed if fully migrated to PostgreSQL)
   sqlite-db:
     image: alpine:latest
     container_name: koisk-sqlite
@@ -35,6 +58,10 @@ services:
       ]
     environment:
       - SQLITE_DB_PATH=/data/koisk.db
+
+volumes:
+  postgres_data:
+    name: kiosk-postgres-data
 
 networks:
   default:

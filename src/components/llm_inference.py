@@ -1,101 +1,191 @@
-"""
-LLM Inference Component using Llama.cpp server.
-Simplified implementation for initial development.
-"""
-
-import asyncio
 import logging
 import requests
 from typing import Optional, List, Dict
-import json
+import time
 
 logger = logging.getLogger(__name__)
 
 
 class LLMComponent:
-    """LLM component for text generation using Llama.cpp server."""
-    
-    def __init__(self, config):
+    def __init__(self, config, rag_component=None):
         self.config = config
+        self.rag_component = rag_component
         self.server_url = None
+        self.max_tokens = None
+        self.temperature = None
         self.is_initialized = False
+        self.use_rag = True
         
     async def initialize(self):
-        """Initialize the LLM component."""
         try:
             logger.info("Initializing LLM component...")
-            
-            # For now, we'll use a mock implementation
-            # In production, this would connect to a Llama.cpp server
-            self.server_url = self.config.get('llm', {}).get('server_url', 'http://localhost:8080')
-            
-            # TODO: Implement actual Llama.cpp server connection
-            # For now, we'll use a simple mock response
-            self.is_initialized = True
-            logger.info("LLM component initialized successfully (mock mode)")
+            llm_config = self.config.get('llm', {})
+            self.server_url = llm_config.get('server_url', 'http://localhost:8080')
+            self.max_tokens = llm_config.get('max_tokens', 150)
+            self.temperature = llm_config.get('temperature', 0.7)
+            try:
+                response = requests.get(f"{self.server_url}/v1/models", timeout=5)
+                if response.status_code == 200:
+                    logger.info(f"Llama.cpp server is running at {self.server_url}")
+                    self.is_initialized = True
+                else:
+                    logger.warning(f"Llama.cpp server responded with status {response.status_code}")
+                    self.is_initialized = False
+            except requests.exceptions.RequestException as e:
+                logger.warning(f"Llama.cpp server not available at {self.server_url}: {e}")
+                logger.info("Will attempt to start server or use fallback mode")
+                self.is_initialized = False
+            if self.rag_component and not self.rag_component.is_initialized:
+                logger.info("Initializing RAG component...")
+                await self.rag_component.initialize()
+                logger.info("RAG component initialized successfully")
+            logger.info("LLM component initialization complete")
             
         except Exception as e:
             logger.error(f"Failed to initialize LLM: {e}")
             raise
     
-    async def generate_response(self, prompt: str, context: Optional[List[Dict]] = None) -> Optional[str]:
-        """
-        Generate response using LLM.
-        
-        Args:
-            prompt: Input prompt
-            context: Conversation context
-            
-        Returns:
-            Generated response or None if failed
-        """
-        if not self.is_initialized:
-            logger.warning("LLM not initialized")
-            return None
-        
+    def _build_system_prompt(self) -> str:
+        return """You are an IIITM Gwalior information assistant.
+Answer questions using ONLY the CONTEXT below. Be brief and accurate.
+If the answer isn't in the CONTEXT, say "I don't have that information."
+Do NOT start with "According to" or "Based on" - answer directly."""
+
+    def _format_rag_context(self, rag_results: List[Dict]) -> str:
+        if not rag_results:
+            return ""
+        sorted_results = sorted(rag_results, key=lambda x: x['similarity'], reverse=True)
+        context_parts = ["CONTEXT:"]
+        for i, doc in enumerate(sorted_results[:3], 1):
+            context_parts.append(f"\n{i}. {doc['content'][:500]}")
+        return "\n".join(context_parts)
+
+    def _build_prompt(self, user_query: str, rag_context: str, conversation_history: Optional[List[Dict]] = None) -> str:
+        prompt_parts = [self._build_system_prompt()]
+        if rag_context:
+            prompt_parts.append(f"\n{rag_context}")
+        prompt_parts.append(f"\n\nQuestion: {user_query}")
+        prompt_parts.append("Answer:")
+        return "\n".join(prompt_parts)
+
+    async def generate_response(self, prompt: str, use_rag: bool = True, conversation_history: Optional[List[Dict]] = None) -> Optional[str]:
         try:
-            logger.debug(f"Generating response for prompt: {prompt[:50]}...")
+            start_time = time.time()
+            logger.info(f"Processing query: {prompt}")
+            rag_context = ""
+            rag_results = None
+            if use_rag and self.rag_component:
+                logger.info("Searching knowledge base...")
+                rag_results = await self.rag_component.search(prompt, limit=5, similarity_threshold=0.4)
+                if rag_results:
+                    logger.info(f"Found {len(rag_results)} relevant documents (top similarity: {rag_results[0]['similarity']:.3f})")
+                    rag_context = self._format_rag_context(rag_results)
+                else:
+                    logger.info("No relevant documents found in knowledge base")
+            full_prompt = self._build_prompt(prompt, rag_context, conversation_history)
+            logger.debug(f"Full prompt length: {len(full_prompt)} chars")
+            if self.is_initialized:
+                logger.info("Generating response from LLM...")
+                response_text = await self._call_llm_server(full_prompt)
+            else:
+                logger.warning("LLM server not available, using fallback mode")
+                response_text = self._generate_fallback_response(prompt, rag_results if use_rag else None)
             
-            # Mock response for development
-            mock_responses = [
-                "Hello! I'm your AI assistant. How can I help you today?",
-                "I understand you're looking for information. Let me help you with that.",
-                "That's an interesting question. Let me provide you with some details.",
-                "I'm here to assist you. Could you please provide more details?",
-                "Thank you for your question. Here's what I can tell you about that topic."
-            ]
+            elapsed = time.time() - start_time
+            logger.info(f"Response generated in {elapsed:.2f}s")
+            logger.debug(f"Response preview: {response_text[:100]}...")
             
-            import random
-            response = random.choice(mock_responses)
-            
-            logger.debug(f"Generated response: {response}")
-            return response
-            
-            # TODO: Implement actual LLM inference
-            # payload = {
-            #     "prompt": prompt,
-            #     "context": context or [],
-            #     "max_tokens": 150,
-            #     "temperature": 0.7
-            # }
-            # 
-            # response = requests.post(
-            #     f"{self.server_url}/generate",
-            #     json=payload,
-            #     timeout=30
-            # )
-            # 
-            # if response.status_code == 200:
-            #     result = response.json()
-            #     return result.get("text", "")
-            # else:
-            #     logger.error(f"LLM server error: {response.status_code}")
-            #     return None
+            return response_text
             
         except Exception as e:
             logger.error(f"Error in LLM generation: {e}")
+            import traceback
+            traceback.print_exc()
             return None
+
+    async def _call_llm_server(self, prompt: str) -> str:
+        try:
+            payload = {
+                "prompt": prompt,
+                "max_tokens": self.max_tokens,
+                "temperature": self.temperature,
+                "top_p": 0.9,
+                "top_k": 40, 
+                "repeat_penalty": 1.1,
+                "stop": [
+                    "User:", "Assistant:", 
+                    "\n\nUser:", "\n\nAssistant:",
+                    "===", "[END]", 
+                    "\n\n\n"
+                ],
+                "stream": False
+            }
+            
+            response = requests.post(
+                f"{self.server_url}/v1/completions",
+                json=payload,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                choices = result.get("choices", [])
+                if choices:
+                    generated_text = choices[0].get("text", "").strip()
+                    generated_text = self._post_process_response(generated_text)
+                    return generated_text if generated_text else "I'm sorry, I couldn't generate a response."
+                else:
+                    return "I'm sorry, I couldn't generate a response."
+            else:
+                logger.error(f"LLM server error: {response.status_code} - {response.text}")
+                return "I'm experiencing technical difficulties. Please try again."
+                
+        except requests.exceptions.Timeout:
+            logger.error("LLM server timeout")
+            return "The request took too long. Please try a simpler question."
+        except Exception as e:
+            logger.error(f"Error calling LLM server: {e}")
+            raise
     
+    def _post_process_response(self, text: str) -> str:
+        for marker in ["User:", "Assistant:", "CONTEXT", "===", "[Document"]:
+            if marker in text:
+                text = text.split(marker)[0]
+        while "\n\n\n" in text:
+            text = text.replace("\n\n\n", "\n\n")
+        text = text.strip()
+        avoid_phrases = [
+            "based on the context",
+            "according to the provided information",
+            "from the knowledge base",
+            "the context shows"
+        ]
+        
+        text_lower = text.lower()
+        for phrase in avoid_phrases:
+            if text_lower.startswith(phrase):
+                parts = text.split(":", 1)
+                if len(parts) > 1:
+                    text = parts[1].strip()
+                    if text:
+                        text = text[0].upper() + text[1:]
+        return text
+
+    def _generate_fallback_response(self, query: str, rag_results: Optional[List[Dict]] = None) -> str:
+        if rag_results and len(rag_results) > 0:
+            top_result = rag_results[0]
+            return f"Based on the knowledge base: {top_result['content'][:200]}... (Source: {top_result['title']})"
+        else:
+            return "I apologize, but I'm unable to process your request at the moment. The LLM server is not available and I couldn't find relevant information in the knowledge base."
+    
+    async def check_server_health(self) -> bool:
+        try:
+            response = requests.get(f"{self.server_url}/v1/models", timeout=2)
+            return response.status_code == 200
+        except Exception:
+            return False
+
     async def cleanup(self):
-        """Cleanup resources."""
+        if self.rag_component:
+            await self.rag_component.cleanup()
         logger.info("LLM component cleaned up")

@@ -24,9 +24,9 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 # Add the app directory to the Python path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from settings import get_settings
-from src.repositories.knowledge_base_repository import KnowledgeBaseRepository
-from src.schemas.knowledge_base import DocumentMetadata
+from services.settings import get_settings
+from repositories.knowledge_base_repository import KnowledgeBaseRepository
+from schemas.knowledge_base import DocumentMetadata
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
