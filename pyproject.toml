@@ -36,6 +36,11 @@ dependencies = [
     "mediapipe>=0.10.21",
     "openai-whisper>=20250625",
     "soundfile>=0.13.1",
+    "aiohttp>=3.13.2",
+    "bs4>=0.0.2",
+    "langchain-text-splitters>=1.0.0",
+    "transformers>=4.40,<4.55",
+    "asyncpg>=0.30.0",
 ]
 
 [project.optional-dependencies]
