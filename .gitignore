@@ -29,3 +29,5 @@ data/
 
 src/scraped_data/
 scraped_data
+
+src/server/node_modules/
