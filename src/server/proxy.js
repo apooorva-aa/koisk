@@ -15,9 +15,9 @@ const cors = require("cors");
 // Environment Variables
 // ----------------------
 const API_KEY = process.env.GEMINI_API_KEY;
-const MODEL = process.env.GEMINI_MODEL || "gemini-1.5-flash";
-const API_BASE = process.env.GENERATIVE_API_BASE || "https://generativelanguage.googleapis.com";
-const API_VERSION = process.env.GENERATIVE_API_VERSION || "v1beta";
+const MODEL = "gemini-2.5-flash-lite";
+const API_BASE = "https://generativelanguage.googleapis.com";
+const API_VERSION = "v1beta";
 
 // Construct final endpoint
 const GEMINI_ENDPOINT = `${API_BASE}/${API_VERSION}/models/${MODEL}:generateContent`;
