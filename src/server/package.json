@@ -1,0 +1,15 @@
+{
+  "name": "koisk-proxy",
+  "version": "0.1.0",
+  "description": "Small proxy for Gemini/Generative Language API for koisk frontend (keeps API key server-side)",
+  "main": "proxy.js",
+  "scripts": {
+    "start": "node proxy.js"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "google-auth-library": "^10.5.0"
+  }
+}

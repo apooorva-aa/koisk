@@ -47,3 +47,7 @@ rag:
   max_results: 5  # More context for better answers
   similarity_threshold: 0.4  # More selective retrieval
   knowledge_base_path: "data/koisk.db"  # Legacy SQLite path (not used with PostgreSQL)
+  use_reranker: true  # Enable reranking for better relevance
+  reranker_model: "BAAI/bge-reranker-base"  # Lighter model for Raspberry Pi
+  initial_retrieval_k: 20  # Retrieve 20 candidates initially
+  final_top_k: 5  # Rerank down to top 5

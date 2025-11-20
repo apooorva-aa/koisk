@@ -7,14 +7,16 @@ logger = logging.getLogger(__name__)
 
 
 class LLMComponent:
-    def __init__(self, config, rag_component=None):
+    def __init__(self, config, rag_component=None, reranker_component=None):
         self.config = config
         self.rag_component = rag_component
+        self.reranker_component = reranker_component
         self.server_url = None
         self.max_tokens = None
         self.temperature = None
         self.is_initialized = False
         self.use_rag = True
+        self.use_reranker = config.get('rag', {}).get('use_reranker', True) if config else True
         
     async def initialize(self):
         try:
@@ -39,6 +41,12 @@ class LLMComponent:
                 logger.info("Initializing RAG component...")
                 await self.rag_component.initialize()
                 logger.info("RAG component initialized successfully")
+            
+            if self.reranker_component and not self.reranker_component.is_initialized:
+                logger.info("Initializing reranker component...")
+                await self.reranker_component.initialize()
+                logger.info("Reranker component initialized successfully")
+            
             logger.info("LLM component initialization complete")
             
         except Exception as e:
@@ -51,13 +59,35 @@ Answer questions using ONLY the CONTEXT below. Be brief and accurate.
 If the answer isn't in the CONTEXT, say "I don't have that information."
 Do NOT start with "According to" or "Based on" - answer directly."""
 
-    def _format_rag_context(self, rag_results: List[Dict]) -> str:
+    def _format_rag_context(self, rag_results: List[Dict], use_rerank_order: bool = False) -> str:
+        """Format RAG results with improved context presentation."""
         if not rag_results:
             return ""
-        sorted_results = sorted(rag_results, key=lambda x: x['similarity'], reverse=True)
+        
+        # IMPORTANT: Don't re-sort if using reranked results!
+        # Reranked results are already in optimal order
+        if not use_rerank_order:
+            # Only sort by similarity if NOT reranked
+            sorted_results = sorted(rag_results, key=lambda x: x.get('similarity', 0), reverse=True)
+        else:
+            # Use the order as-is (already reranked)
+            sorted_results = rag_results
+        
         context_parts = ["CONTEXT:"]
-        for i, doc in enumerate(sorted_results[:3], 1):
-            context_parts.append(f"\n{i}. {doc['content'][:500]}")
+        for i, doc in enumerate(sorted_results[:5], 1):
+            # Include source attribution for better traceability
+            source = doc.get('title', 'Unknown')
+            content = doc['content'][:600]  # Slightly longer chunks
+            
+            # Show rerank score if available, otherwise similarity
+            score_info = ""
+            if 'rerank_score' in doc:
+                score_info = f" (relevance: {doc['rerank_score']:.3f})"
+            elif 'similarity' in doc:
+                score_info = f" (similarity: {doc['similarity']:.3f})"
+            
+            context_parts.append(f"\n[Source {i}: {source}{score_info}]\n{content}")
+        
         return "\n".join(context_parts)
 
     def _build_prompt(self, user_query: str, rag_context: str, conversation_history: Optional[List[Dict]] = None) -> str:
@@ -76,10 +106,43 @@ Do NOT start with "According to" or "Based on" - answer directly."""
             rag_results = None
             if use_rag and self.rag_component:
                 logger.info("Searching knowledge base...")
-                rag_results = await self.rag_component.search(prompt, limit=5, similarity_threshold=0.4)
+                # Retrieve more results initially (20) for better coverage
+                rag_results = await self.rag_component.search(
+                    prompt, 
+                    limit=20,  # Increased from 5 to 20 for reranking
+                    similarity_threshold=0.3  # Lowered threshold to get more candidates
+                )
                 if rag_results:
                     logger.info(f"Found {len(rag_results)} relevant documents (top similarity: {rag_results[0]['similarity']:.3f})")
-                    rag_context = self._format_rag_context(rag_results)
+                    
+                    # Track if we used reranking
+                    used_reranking = False
+                    
+                    # Apply reranking if available
+                    if self.use_reranker and self.reranker_component and self.reranker_component.is_initialized:
+                        logger.info("Applying reranking to improve relevance...")
+                        rag_results = await self.reranker_component.rerank(
+                            query=prompt,
+                            documents=rag_results,
+                            top_k=5
+                        )
+                        if rag_results:
+                            used_reranking = True
+                            logger.info(f"Reranked to top {len(rag_results)} documents (top rerank score: {rag_results[0].get('rerank_score', 'N/A'):.3f})")
+                            
+                            # DEBUG: Log reranked order
+                            logger.debug("Reranked document order:")
+                            for i, doc in enumerate(rag_results[:5], 1):
+                                logger.debug(f"  {i}. [Rerank: {doc.get('rerank_score', 0):.3f}] {doc.get('title', 'Unknown')[:50]}")
+                    else:
+                        # Fallback: take top 5 from the 20 results without reranking
+                        rag_results = rag_results[:5]
+                    
+                    # Format context - preserve rerank order!
+                    rag_context = self._format_rag_context(rag_results, use_rerank_order=used_reranking)
+                    
+                    # DEBUG: Log what's being sent to LLM
+                    logger.debug(f"Context being sent to LLM (first 500 chars):\n{rag_context[:500]}")
                 else:
                     logger.info("No relevant documents found in knowledge base")
             full_prompt = self._build_prompt(prompt, rag_context, conversation_history)
@@ -188,4 +251,6 @@ Do NOT start with "According to" or "Based on" - answer directly."""
     async def cleanup(self):
         if self.rag_component:
             await self.rag_component.cleanup()
+        if self.reranker_component:
+            await self.reranker_component.cleanup()
         logger.info("LLM component cleaned up")
