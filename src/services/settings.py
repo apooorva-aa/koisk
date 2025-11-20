@@ -45,23 +45,75 @@ class Settings(BaseSettings):
     )
 
     EMBEDDING_MODEL: str = Field(
-        default="all-MiniLM-L6-v2",
-        description="Local embedding model (384-dim MiniLM).",
+        default="BAAI/bge-large-en-v1.5",
+        description="BGE-Large embedding model (1024-dim) - better retrieval performance than MiniLM.",
     )
 
     CHUNK_SIZE: int = Field(
-        default=800,
-        description="Chunk size for splitting museum/tourism text.",
+        default=512,
+        description="Optimal chunk size for better context preservation (research-recommended).",
     )
 
     CHUNK_OVERLAP: int = Field(
-        default=150,
+        default=50,
         description="Overlap between consecutive text chunks.",
     )
 
     VECTOR_DIMENSIONS: int = Field(
-        default=384,
-        description="Embedding dimension for MiniLM model.",
+        default=1024,
+        description="Embedding dimension for BGE-Large model.",
+    )
+    
+    # ---- Contextual Retrieval Settings ----
+    USE_CONTEXTUAL_EMBEDDINGS: bool = Field(
+        default=True,
+        description="Enable contextual embeddings - prepend context to chunks before embedding.",
+    )
+    
+    CONTEXT_INSTRUCTION_TEMPLATE: str = Field(
+        default="""<document>
+{WHOLE_DOCUMENT}
+</document>
+
+Here is the chunk we want to situate within the whole document:
+<chunk>
+{CHUNK_CONTENT}
+</chunk>
+
+Please give a short succinct context to situate this chunk within the overall document for the purposes of improving search retrieval of the chunk. Answer only with the succinct context and nothing else.""",
+        description="Template for generating contextual information for chunks.",
+    )
+    
+    # ---- Hybrid Search Settings ----
+    USE_HYBRID_SEARCH: bool = Field(
+        default=True,
+        description="Enable hybrid search combining semantic + BM25 lexical search.",
+    )
+    
+    USE_BM25: bool = Field(
+        default=True,
+        description="Enable BM25 for keyword-based retrieval alongside embeddings.",
+    )
+    
+    # ---- Reranking Settings ----
+    USE_RERANKER: bool = Field(
+        default=True,
+        description="Enable reranking to improve result relevance.",
+    )
+    
+    RERANKER_MODEL: str = Field(
+        default="BAAI/bge-reranker-large",
+        description="Reranker model for refining retrieval results.",
+    )
+    
+    INITIAL_RETRIEVAL_K: int = Field(
+        default=20,
+        description="Initial number of chunks to retrieve before reranking.",
+    )
+    
+    FINAL_TOP_K: int = Field(
+        default=5,
+        description="Final number of top chunks to pass to LLM after reranking.",
     )
 
     # ---- Vector DB ----
